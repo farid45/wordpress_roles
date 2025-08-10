@@ -93,6 +93,6 @@ ansible-playbook playbook.yml -vvv > install.log 2>&1
 ![blog](blog.png)
 
 ## Итог
-* #### WordPress успешно разделен на роли развернут на Debian ARM64 в UTM.
+* #### WordPress успешно разделен на роли и развернут на Debian ARM64 в UTM.
 * #### Все настройки сохранены в Ansible-playbook для повторного использования.
 * ##### Логи развертывания сохранены в install.log.

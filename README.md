@@ -23,8 +23,14 @@ ip a
 ```bash
 mkdir ~/wordpress_roles && cd ~/wordpress_roles
 ```
-2. **Создал inventory.ini (указал IP виртуальной машины)**:
-```ini
+2. **Создал ansible.cfg**:
+```cfg
+[defaults]
+inventory = ./inventory
+```
+
+3. **Создал inventory (указал IP виртуальной машины)**:
+```
 [webservers]
 192.168.64.10 ansible_user=debian ansible_ssh_pass=debian
 [webservers:vars]

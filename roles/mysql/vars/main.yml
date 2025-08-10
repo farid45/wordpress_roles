@@ -1,0 +1,6 @@
+---
+mysql_root_user: "debian"
+mysql_root_password: "debian"
+mysql_wp_db: "wordpress"
+mysql_wp_user: "wpuser"
+mysql_wp_password: "wp_password_123"

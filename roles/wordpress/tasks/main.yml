@@ -1,0 +1,85 @@
+---
+- block:
+  - name: Загрузка WordPress
+    get_url:
+      url: https://wordpress.org/latest.tar.gz
+      dest: /tmp/wordpress.tar.gz
+
+  - name: Распаковка WordPress
+    unarchive:
+      src: /tmp/wordpress.tar.gz
+      dest: /var/www/
+      remote_src: yes
+      extra_opts: [--strip-components=1]
+      creates: /var/www/wordpress/wp-config-sample.php
+
+  - name: Настройка прав WordPress
+    file:
+      path: /var/www/wordpress
+      state: directory
+      recurse: yes
+      owner: www-data
+      group: www-data
+
+  - name: Создание каталога загрузок
+    file:
+      path: /var/www/wordpress/wp-content/uploads
+      state: directory
+      owner: www-data
+      group: www-data
+      mode: '0755'
+
+  - name: Настройка виртуального хоста Apache
+    template:
+      src: wordpress.conf.j2
+      dest: /etc/apache2/sites-available/wordpress.conf
+    notify: Restart Apache
+
+  - name: Включение сайта WordPress
+    file:
+      src: /etc/apache2/sites-available/wordpress.conf
+      dest: /etc/apache2/sites-enabled/wordpress.conf
+      state: link
+
+  - name: Отключение дефолтного сайта
+    file:
+      path: /etc/apache2/sites-enabled/000-default.conf
+      state: absent
+
+  - name: Включение модуля перезаписи
+    apache2_module:
+      name: rewrite
+      state: present
+    notify: Restart Apache
+
+  - name: Создание wp-config.php
+    template:
+      src: wp-config.php.j2
+      dest: /var/www/wordpress/wp-config.php
+      owner: www-data
+      group: www-data
+      mode: '0644'
+
+  - name: Установка WP-CLI
+    get_url:
+      url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+      dest: /usr/local/bin/wp
+      mode: '0755'
+
+  - name: Установка WordPress через WP-CLI
+    command: >
+      /usr/local/bin/wp core install
+      --path=/var/www/wordpress
+      --url={{ wp_url }}
+      --title="{{ wp_title }}"
+      --admin_user={{ wp_admin_user }}
+      --admin_password={{ wp_admin_password }}
+      --admin_email={{ wp_admin_email }}
+      --skip-email
+      --allow-root
+    args:
+      creates: /var/www/wordpress/wp-config.php
+    register: wp_install
+    changed_when: "'already installed' not in wp_install.stdout"
+  become: yes
+  tags: wordpress

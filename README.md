@@ -31,10 +31,8 @@ inventory = ./inventory
 
 3. **Создал inventory (указал IP виртуальной машины)**:
 ```
-[webservers]
-192.168.64.10 ansible_user=debian ansible_ssh_pass=debian
-[webservers:vars]
-ansible_python_interpreter=/usr/bin/python3
+[myhosts]
+192.168.64.10 ansible_user=debian ansible_ssh_private_key_file=~/.ssh/id_rsa
 ```
 
 ## 3. Подготовка Playbook и конфигов

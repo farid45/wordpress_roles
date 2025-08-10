@@ -81,6 +81,8 @@ ansible webservers -i inventory.ini -m ping
 * Конфигурация wp-config.php
 * Установка через WP-CLI
 
+## 5. Запуск развертывания
+
 1. **Выполнил playbook (с записью логов)**:
 ```bash
 ansible-playbook playbook.yml -vvv > install.log 2>&1
